@@ -3,6 +3,7 @@ package com.example.web1.mvcAnnotations.domain;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -32,5 +33,26 @@ public class EmployeeController {
       return employees;
     }
     return employees.subList(0, limit);
+  }
+
+//  Task 2.3: Select employee by id
+  @GetMapping("/employees/{id}")
+  @ResponseBody
+  @ResponseStatus(HttpStatus.OK)
+  public Employee getEmployeeById(@PathVariable String id){
+
+    for(Employee employee : employees){
+      if(Objects.equals(employee.getId(), id)){
+        return employee;
+      }
+    }
+    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No employee present with given id: " + id);
+  }
+
+  @DeleteMapping("/employees/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteEmployees(@PathVariable String id){
+
+    employees.removeIf(employee -> Objects.equals(employee.getId(), id));
   }
 }
